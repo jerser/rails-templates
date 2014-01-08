@@ -12,7 +12,7 @@ gem 'spree_auth_devise', github: 'spree/spree_auth_devise', branch: spree_versio
 gem 'spree_i18n', github: 'spree/spree_i18n', branch: spree_version
 
 gem 'pg'
-gsub_file "Gemfile", /^gem\s+["']sqlite3["'].*$/, ''
+gsub_file 'Gemfile', /^gem\s+["']sqlite3["'].*$/, ''
 
 if yes? 'Europabank integration? (y/N)'
   gem 'active_merchant-europabank', github: 'jerser/active_merchant-europabank'
@@ -38,6 +38,18 @@ run "createdb #{@app_name}_test"
 generate('spree:install', '--auto-accept')
 
 run 'rm README.rdoc'
+
+inside 'config' do
+  run 'wget https://raw.github.com/jerser/rails-templates/master/config/spree_deploy.rb'\
+      ' -O deploy.rb'
+  gsub_file 'deploy.rb', /__GIT_REPOSITORY__/, ask('Git repository?')
+  gsub_file 'deploy.rb', /__STAGING_SERVER__/, ask('Staging server?')
+  gsub_file 'deploy.rb', /__STAGING_USER__/, ask('Staging user?')
+  gsub_file 'deploy.rb', /__PRODUCTION_SERVER__/, ask('Production server?')
+  gsub_file 'deploy.rb', /__PRODUCTION_USER__/, ask('Production user?')
+  run 'wget https://raw.github.com/jerser/rails-templates/master/config/unicorn.rb'\
+      ' -O unicorn.rb'
+end
 
 git :init
 git add: '.'
