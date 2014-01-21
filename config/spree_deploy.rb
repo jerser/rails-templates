@@ -34,18 +34,23 @@ default_environment["RAILS_ENV"] = 'production'
 
 task :symlink_database_yml do
   run "rm #{release_path}/config/database.yml"
+  run "[ -d #{shared_path}/config ] || mkdir #{shared_path}/config &&  echo -e \""\
+      'production:\n  adapter: postgresql\n  database: ' + user + '" > '\
+      "#{shared_path}/config/database.yml"
   run "ln -sfn #{shared_path}/config/database.yml " \
       "#{release_path}/config/database.yml"
 end
 
 task :symlink_spree do
   run "rm -f #{release_path}/public/spree"
+  run "[ -d #{shared_path}/spree ] || mkdir #{shared_path}/spree"
   run "ln -sfn #{shared_path}/spree " \
       "#{release_path}/public/spree"
 end
 
 task :symlink_private do
   run "rm -f #{release_path}/public/private"
+  run "[ -d #{shared_path}/private ] || mkdir #{shared_path}/private"
   run "ln -sfn #{shared_path}/private " \
       "#{release_path}/public/private"
 end
