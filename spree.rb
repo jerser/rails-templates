@@ -5,7 +5,7 @@ gem_group :production do
   gem 'appsignal'
 end
 gem_group :development do
-  gem 'capistrano'
+  gem 'capistrano', '~> 2.5.14'
 end
 gem 'spree', github: 'spree/spree', branch: spree_version
 gem 'spree_auth_devise', github: 'spree/spree_auth_devise', branch: spree_version
