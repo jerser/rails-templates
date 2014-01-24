@@ -49,8 +49,8 @@ inside 'config' do
   gsub_file 'deploy.rb', /__PRODUCTION_USER__/, ask('Production user?')
   run 'wget https://raw.github.com/jerser/rails-templates/master/config/unicorn.rb'\
       ' -O unicorn.rb'
-  run 'echo -e "load \'deploy\'\nload \'config/deploy\'" > Capfile'
 end
+run 'echo -e "load \'deploy\'\nload \'config/deploy\'" > Capfile'
 
 git :init
 git add: '.'
