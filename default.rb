@@ -11,11 +11,15 @@ gem 'neat'
 
 # Set the Javascript engines for MRI and JRuby
 gem 'therubyracer', platforms: :ruby
-gem 'therubyrhino', platforms: :ruby
+gem 'therubyrhino', platforms: :jruby
 
-# User Opal instead of CoffeeScript
-gem 'opal-rails'
+# Remove CoffeeScript
 gsub_file 'Gemfile', /^gem\s+["']coffee-rails["'].*$/, ''
+
+use_opal = yes? 'Use Opal as Javascript engine (y/N)'
+if use_opal
+  gem 'opal-rails'
+end
 
 gem_group :production do
   gem 'unicorn'
@@ -52,8 +56,10 @@ run 'echo -e "@import \"bourbon\";\n@import \"grid-settings\";\n@import \"neat\"
 run 'echo -e "@import \"neat-helpers\";\n" > app/assets/stylesheets/_grid-settings.scss'
 
 # Replace application.js with application.js.rb for Opal
-run 'rm app/assets/javascripts/application.js'
-run 'echo -e "//= require opal\n//= require opal_ujs\n//= require turbolinks\n//= require_tree ." > app/assets/javascripts/application.js.rb'
+if use_opal
+  run 'rm app/assets/javascripts/application.js'
+  run 'echo -e "//= require opal\n//= require opal_ujs\n//= require turbolinks\n//= require_tree ." > app/assets/javascripts/application.js.rb'
+end
 
 # Replace application.html.erb with application.html.slim
 run 'rm app/views/layouts/application.html.erb'
