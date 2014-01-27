@@ -59,6 +59,20 @@ run 'echo -e "@import \"neat-helpers\";\n" > app/assets/stylesheets/_grid-settin
 if use_opal
   run 'rm app/assets/javascripts/application.js'
   run 'echo -e "//= require opal\n//= require opal_ujs\n//= require turbolinks\n//= require_tree ." > app/assets/javascripts/application.js.rb'
+  file 'config/initializers/slim_opal.rb', <<-CONFIG
+module Slim
+  class Embedded
+    class OpalEngine < TiltEngine
+      protected
+
+      def tilt_render(tilt_engine, tilt_options, text)
+        [:static, ::Opal.compile(text)]
+      end
+    end
+    register :opal, JavaScriptEngine, :engine => OpalEngine
+  end
+end
+CONFIG
 end
 
 # Replace application.html.erb with application.html.slim
